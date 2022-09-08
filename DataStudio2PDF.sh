@@ -10,12 +10,12 @@ screen=1
 #mainMenu
 function menu {
 
-  echo "Was möchten Sie tun?"
-  echo "Zur Auswahl stehen:"
-  echo "Neues Projekt anlegen (new)"
-  echo "PDF erstellen (pdf)"
-  echo "Ihre Formateinstellungen ändern (settings)"
-  echo "und Projekt entfernen (remove)"
+   echo "What would you like to do?"
+   echo "You can choose from:"
+   echo "Create new project (new)"
+   echo "Create PDF (pdf)"
+   echo "Change your format settings (settings)"
+   echo "and remove project (remove)"
   read Command
   if [[ $Command == "new" ]]
     then
@@ -30,7 +30,7 @@ function menu {
     then
       remove
   else
-   echo "Befehl nicht bekannt"
+   echo "Command unknown"
    menu
   fi
 
@@ -39,24 +39,27 @@ function menu {
 # Add Project
 function new {
 
-      echo Wie soll das neue Projekt heißen?
+      echo What should the new project be called?
       read newProject
-      echo "Öffnen Sie das passende Projekt in Datastudio"
-      echo "Die URL für Ihr Projekt sieht in etwa so aus: https://datastudio.google.com/#/org//reporting/ajdhshjsiejfhjdsguhj/page/XYZ"
-      echo "Geben Sie den Projektnamen aus der URL an"
-      echo "Im Beispiel wäre der Projektname "ajdhshjsiejfhjdsguhj""
+      
+      echo "Open the appropriate project in Datastudio"
+      echo "The URL for your project looks something like this: https://datastudio.google.com/#/org//reporting/ajdhshjsiejfhjdsguhj/page/XYZ"
+      echo "Enter the project name from the URL"
+      echo "In the example the project name would be "ajdhshjsiejfhjdsguhj""
       read newProjectName
-      echo "Geben Sie den Seitenname aus der URL an"
-      echo "Im Beispiel wäre der Seitenname "XYZ""
+      
+      echo "Enter the page name from the URL"
+      echo "In the example, the page name would be "XYZ""
       read newProjectPage
       newProjectPages+=($newProjectPage)
-      echo "Wollten Sie eine weitere Seite hinzufügen(y/n)?"
+      
+      echo "Did you want to add another page(y/n)?"
       read mehr
       while [ $mehr == "y" ]; do
-        echo "Öffnen Sie die nächste Seite und geben Sie den Seitennamen an"
+        echo "Open the next page and specify the page name"
         read newProjectPage
         newProjectPages+=($newProjectPage)
-        echo "Wollten Sie eine weitere Seite hinzufügen(y/n)?"
+        echo "Did you want to add another page(y/n)?"
         read mehr
       done
       echo $newProject >> files/projects.txt
@@ -77,8 +80,8 @@ function pdf {
       projects+=($projectName)
     done < $projectinfo
 # Select Project
-  echo "Bitte geben Sie den Shortcut für ihre Anfrage an."
-  echo "Zur Auswahl stehen:"
+  echo "Please provide the shortcut for your request."
+  echo "You can choose from:"
   echo ${projects[@]}
   read selection
 
@@ -101,7 +104,7 @@ function pdf {
   done
 
   # Read Format
-  echo "Ist die Datei im Hoch-(h) oder Querformat(q)?"
+  echo "Is the file in portrait (h) or landscape (q) format?"
 
   read format
 
@@ -110,14 +113,14 @@ function pdf {
         y=200
         w=1100
         h=820
-        echo "Stellen Sie den Browser auf Vollbild und setzen Sie den Zoomlevel auf 90%"
+        echo "Set the browser to full screen and set the zoom level to 90%"
         read go
       elif [ $format == "h" ]; then
         x=540
         y=180
         w=600
         h=800
-        echo "Stellen Sie den Browser auf Vollbild und setzen Sie den Zoomlevel auf 67%"
+        echo "Set the browser to full screen and set the zoom level to 67%"
         read go
       else
         echo "ERR0R detected. Shutting down."
@@ -125,7 +128,7 @@ function pdf {
     fi
 
   # Create PDF
-  echo "Ihre Daten werden jetzt geladen, bitte fassen Sie nichts an während das Programm arbeitet"
+  echo "Your data is now being loaded, please do not touch anything while the program is running"
 
     for page in ${pages[@]}
     do
@@ -141,40 +144,40 @@ function pdf {
 }
 
 function settings {
-  echo "Default Verwenden? (y/n)"
+  echo "Use default? (y/n)"
   read default
   if [ $default == "y" ]; then
     qFormat=(300,200,1100,820);
     hFormat=(540,180,600,800);
     echo $qFormat > files/settings.txt
     echo $hFormat >> files/settings.txt
-    echo "Default wieder hergestellt"
+    echo "Default restored"
     menu
   fi
-    echo "Wollen Sie die Parameter anpassen? (y/n)"
+    echo "Do you want to adjust the parameters? (y/n)"
     read anpassen
   if [ $anpassen == "y" ]; then
-    echo "Machen Sie im Vollbildmodus einen Screenshot über cmd, shift und 4 [Mac]"
-    echo "Lesen Sie die Daten für das Querformat in der linke Ecke oben ab"
+    echo "Take a screenshot in full screen via cmd, shift and 4 [Mac]"
+    echo "Read the landscape data in the top left corner"
     qFormat=()
     echo "X="
     read qFormatX
     echo "Y="
     read qFormatY
-    echo "Halten Sie die linke Maustaste gedrückt und fahren Sie in die rechte Ecke unten"
+    echo "Hold the left mouse button and move to the bottom right corner"
     echo "W="
     read qFormatW
     echo "H="
     read qFormatH
     qFormat+=($qFormatX,$qFormatY,$qFormatW,$qFormatH)
 
-    echo "Lesen Sie die Daten für das Hochformat in der linke Ecke oben ab"
+    echo "Read the data for portrait mode in the top left corner"
     hFormat=()
     echo "X="
     read hFormatX
     echo "Y="
     read hFormatY
-    echo "Halten Sie die linke Maustaste gedrückt und fahren Sie in die rechte Ecke unten"
+    echo "Hold the left mouse button and move to the bottom right corner"
     echo "W="
     read hFormatW
     echo "H="
@@ -182,7 +185,7 @@ function settings {
     hFormat+=($hFormatX,$hFormatY,$hFormatW,$hFormatH)
     echo $qFormat > files/settings.txt
     echo $hFormat >> files/settings.txt
-    echo "Ihre Änderungen wurden gespeichert"
+    echo "Your changes have been saved"
   fi
   menu
 }
@@ -193,8 +196,8 @@ function remove {
   while read -r projectName || [[ -n $projectName ]]; do
     projects+=($projectName)
   done < $projectinfo
-  echo "Welches Projekt soll entfernt werden?"
-  echo "Zur Auswahl stehen:"
+  echo "Which project do you want to remove?"
+  echo "You can choose from:"
   echo ${projects[@]}
   read removeFile
 #Read chosenProject Data
@@ -206,11 +209,11 @@ function remove {
         echo "$(sed "/$removeFile/d" files/projects.txt)" >files/projects.txt
 
 
-        echo "Ihr Projekt wurde gelöscht"
+       echo "Your project has been deleted"
         menu
       fi
     done
-    echo "Projektname ist leider nicht bekannt."
+    echo "Unfortunately, the project name is not known.
     menu
 
 }
@@ -218,8 +221,8 @@ function remove {
 
 #onload
 
-echo "Dieses Tool dient der Erstellung von PDF Dateien aus Google Datastudio."
-echo "WICHTIG: Stellen Sie sicher, dass poppler (install poppler) und pdfunite ( brew install poppler) installiert sind."
+echo "This tool is used to create PDF files from Google Datastudio."
+echo "IMPORTANT: Make sure poppler (install poppler) and pdfunite (brew install poppler) are installed."
 echo "created by Maximilian Becher für Ueberbit; copyright© 2017"
 
 menu
